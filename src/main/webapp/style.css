@@ -78,6 +78,11 @@ button {
     font-size: 18px;
 }
 
+.highlighted-topic {
+    color: red;
+}
+
+
 @media (max-width: 480px) {
     #options {
         grid-template-columns: 1fr;

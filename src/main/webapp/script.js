@@ -52,6 +52,7 @@ const options = [
 let currentTopicIndex = 0;
 let currentQuestionIndex = 0;
 let totalScore = 0;
+let topicScores = {};
 
 // Elementos do DOM
 const questionElement = document.getElementById('question');
@@ -64,7 +65,9 @@ function generateQuestion() {
     const currentTopic = topics[currentTopicIndex];
     const currentQuestionNumber = currentQuestionIndex + 1;
 
-    questionElement.textContent = `${currentTopic} - Pergunta ${currentQuestionNumber} : ${questions[currentTopicIndex][currentQuestionIndex]}`;
+    questionElement.textContent = `${currentTopic} - Pergunta ${currentQuestionNumber}: ${
+        questions[currentTopicIndex][currentQuestionIndex]
+    }`;
 
     optionsContainer.innerHTML = '';
 
@@ -82,6 +85,8 @@ function generateQuestion() {
 // Função para tratar a resposta do usuário
 function handleAnswer(score) {
     totalScore += score;
+    const currentTopic = topics[currentTopicIndex];
+    topicScores[currentTopic] = (topicScores[currentTopic] || 0) + score;
     showNextQuestion();
 }
 
@@ -108,8 +113,36 @@ function showResult() {
     questionElement.style.display = 'none';
     optionsContainer.style.display = 'none';
     resultContainer.style.display = 'block';
-    scoreElement.textContent = `Pontuação final: ${totalScore}`;
+
+    let resultHTML = '';
+    let totalHTML = '';
+
+    let maxTopicScore = 0;
+    let maxTopics = [];
+
+    Object.entries(topicScores).forEach(([topic, score]) => {
+        resultHTML += `<p>${topic}: ${score}</p>`;
+        if (score > maxTopicScore) {
+            maxTopicScore = score;
+            maxTopics = [topic];
+        } else if (score === maxTopicScore) {
+            maxTopics.push(topic);
+        }
+    });
+
+    totalHTML = `<p>Total de Pontos: ${totalScore}</p>`;
+
+    if (maxTopics.length === 1) {
+        resultHTML += `<p class="highlighted-topic">VOCÊ É FORTE EM <span>${maxTopics[0].toUpperCase()}</span></p>`;
+    } else {
+        const topicsString = maxTopics.map(topic => topic.toUpperCase()).join(' e ');
+        resultHTML += `<p class="highlighted-topic">VOCÊ É FORTE EM: <span>${topicsString}</span></p>`;
+    }
+
+    scoreElement.innerHTML = resultHTML + totalHTML;
 }
+
+
 
 // Inicia o questionário
 function startQuiz() {
@@ -118,4 +151,5 @@ function startQuiz() {
 
 // Chamada para iniciar o questionário ao carregar a página
 startQuiz();
+
 
