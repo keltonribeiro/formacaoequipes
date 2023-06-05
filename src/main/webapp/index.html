@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>WFE-2K23</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed&display=swap" rel="stylesheet">
+  <style>
+    /* Estilos gerais */
+    body {
+      font-family: "Roboto Condensed", sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    #question-container {
+      margin-bottom: 20px;
+    }
+    #result-container {
+      display: none;
+    }
+    /* Estilos para dispositivos móveis */
+    @media (max-width: 600px) {
+      .container {
+        padding: 10px;
+      }
+      h1 {
+        font-size: 24px;
+      }
+      p {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>QUAL O SEU NÍVEL DE GRIT?</h1>
+  <div id="question-container">
+    <p id="question"></p>
+    <div id="options"></div>
+  </div>
+  <div id="result-container">
+    <h2>Resultado</h2>
+    <p id="score"></p>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
