@@ -9,7 +9,7 @@ const questions = [
         { text: "Estou disposto(a) a sacrificar o conforto pessoal em prol do sucesso da equipe/organização.", category: "positive" },
         { text: "Eu mantenho a determinação e o foco mesmo quando os resultados não são imediatos.", category: "positive" },
         { text: "Quando encontro uma dificuldade, persisto até alcançar o resultado desejado.", category: "positive" },
-        { text: "Preciso de um ambiente motivador para me manter motivado.", category: "positive" },
+        { text: "Preciso de um ambiente motivador para me manter motivado.", category: "negative" },
         { text: "Encaro a adversidade como uma chance de aprender e me tornar mais forte.", category: "positive" }
     ],
     // Perguntas para o tópico "Resiliência"
@@ -32,7 +32,7 @@ const questions = [
     [
         { text: "Sou capaz de manter o foco e a persistência em longo prazo, mesmo diante de desafios significativos.", category: "positive" },
         { text: "Não permito que o medo do fracasso me impeça de buscar grandes conquistas.", category: "positive" },
-        { text: "Luto constantemente contra a vontade de desistir.", category: "positive" },
+        { text: "Luto constantemente contra a vontade de desistir.", category: "negative" },
         { text: "Quando encontro um problema, insisto até encontrar uma solução.", category: "positive" },
         { text: "Tenho facilidade de perceber meus erros e aprender com eles.", category: "positive" }
     ]
@@ -87,14 +87,16 @@ function generateQuestion() {
 function handleAnswer(score, category) {
     if (category === "positive") {
         totalScore += score;
+        topicScores[topics[currentTopicIndex]] = (topicScores[topics[currentTopicIndex]] || 0) + score;
     } else {
-        totalScore -= score;
+        const invertedScore = 5 - score;
+        totalScore += invertedScore;
+        topicScores[topics[currentTopicIndex]] = (topicScores[topics[currentTopicIndex]] || 0) + invertedScore;
     }
 
-    const currentTopic = topics[currentTopicIndex];
-    topicScores[currentTopic] = (topicScores[currentTopic] || 0) + score;
     showNextQuestion();
 }
+
 
 // Função para exibir a próxima pergunta ou o resultado final
 function showNextQuestion() {
