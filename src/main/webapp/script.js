@@ -6,35 +6,35 @@ const questionsPerTopic = 5;
 const questions = [
     // Perguntas para o tópico "Garra"
     [
-        "Estou disposto(a) a sacrificar o conforto pessoal em prol do sucesso da equipe/organização.",
-        "Eu mantenho a determinação e o foco mesmo quando os resultados não são imediatos.",
-        "Quando encontro uma dificuldade, persisto até alcançar o resultado desejado.",
-        "Preciso de um ambiente motivador para me manter motivado.",
-        "Encaro a adversidade como uma chance de aprender e me tornar mais forte."
+        { text: "Estou disposto(a) a sacrificar o conforto pessoal em prol do sucesso da equipe/organização.", category: "positive" },
+        { text: "Eu mantenho a determinação e o foco mesmo quando os resultados não são imediatos.", category: "positive" },
+        { text: "Quando encontro uma dificuldade, persisto até alcançar o resultado desejado.", category: "positive" },
+        { text: "Preciso de um ambiente motivador para me manter motivado.", category: "positive" },
+        { text: "Encaro a adversidade como uma chance de aprender e me tornar mais forte.", category: "positive" }
     ],
-    // Perguntas para o tópico "Resiliencia"
+    // Perguntas para o tópico "Resiliência"
     [
-        "Sou capaz de lidar com altos níveis de pressão e estresse sem perder o controle.",
-        "Após uma adversidade, consigo me recuperar e seguir em frente com determinação.",
-        "Encaro as críticas como uma oportunidade de melhorar, em vez de me desmotivar.",
-        "Tenho dificuldade de me adaptar rapidamente a mudanças inesperadas.",
-        "Tenho dificuldade de lídar com minhas emoções e pensamentos quando sou contrariado em uma ideia."
+        { text: "Sou capaz de lidar com altos níveis de pressão e estresse sem perder o controle.", category: "positive" },
+        { text: "Após uma adversidade, consigo me recuperar e seguir em frente com determinação.", category: "positive" },
+        { text: "Encaro as críticas como uma oportunidade de melhorar, em vez de me desmotivar.", category: "positive" },
+        { text: "Tenho dificuldade de me adaptar rapidamente a mudanças inesperadas.", category: "negative" },
+        { text: "Tenho dificuldade de lidar com minhas emoções e pensamentos quando sou contrariado em uma ideia.", category: "negative" }
     ],
     // Perguntas para o tópico "Intensidade"
     [
-        "Tenho um senso de urgência constante e priorizo ações imediatas.",
-        "Transmito energia e motivação para minha equipe, inspirando-os a alcançar grandes resultados.",
-        "Sou conhecido(a) por ir além das expectativas e superar as barreiras.",
-        "Quando tenho ideias e estratégias que acredito que vão gerar resultado, tenho dificuldade de coloca-las em prática de forma imediata.",
-        "Obstáculos pouco me desanimam, rapidamente penso em soluções para supera-los e as coloco em prática."
+        { text: "Tenho um senso de urgência constante e priorizo ações imediatas.", category: "positive" },
+        { text: "Transmito energia e motivação para minha equipe, inspirando-os a alcançar grandes resultados.", category: "positive" },
+        { text: "Sou conhecido(a) por ir além das expectativas e superar as barreiras.", category: "positive" },
+        { text: "Quando tenho ideias e estratégias que acredito que vão gerar resultados, tenho dificuldade de colocá-las em prática de forma imediata.", category: "negative" },
+        { text: "Obstáculos pouco me desanimam. Rapidamente penso em soluções para superá-los e as coloco em prática.", category: "positive" }
     ],
     // Perguntas para o tópico "Tenacidade"
     [
-        "Sou capaz de manter o foco e a persistência em longo prazo, mesmo diante de desafios significativos.",
-        "Não permito que o medo do fracasso me impeça de buscar grandes conquistas.",
-        "Luto constantemente contra a vontade de desistir.",
-        "Quando encontro um problema, insisto até encontrar uma solução.",
-        "Tenho facilidade de peceber meus erros e aprender com eles."
+        { text: "Sou capaz de manter o foco e a persistência em longo prazo, mesmo diante de desafios significativos.", category: "positive" },
+        { text: "Não permito que o medo do fracasso me impeça de buscar grandes conquistas.", category: "positive" },
+        { text: "Luto constantemente contra a vontade de desistir.", category: "positive" },
+        { text: "Quando encontro um problema, insisto até encontrar uma solução.", category: "positive" },
+        { text: "Tenho facilidade de perceber meus erros e aprender com eles.", category: "positive" }
     ]
 ];
 
@@ -59,14 +59,15 @@ const questionElement = document.getElementById('question');
 const optionsContainer = document.getElementById('options');
 const resultContainer = document.getElementById('result-container');
 const scoreElement = document.getElementById('score');
+const titleMain = document.getElementById('title-main');
 
 // Função para gerar uma pergunta com suas opções de resposta
 function generateQuestion() {
     const currentTopic = topics[currentTopicIndex];
     const currentQuestionNumber = currentQuestionIndex + 1;
 
-    questionElement.textContent = `${currentTopic} - Pergunta ${currentQuestionNumber}: ${
-        questions[currentTopicIndex][currentQuestionIndex]
+    questionElement.textContent = `${
+        questions[currentTopicIndex][currentQuestionIndex].text
     }`;
 
     optionsContainer.innerHTML = '';
@@ -75,7 +76,7 @@ function generateQuestion() {
         const button = document.createElement('button');
         button.textContent = option.text;
         button.addEventListener('click', () => {
-            handleAnswer(option.score);
+            handleAnswer(option.score, questions[currentTopicIndex][currentQuestionIndex].category);
         });
 
         optionsContainer.appendChild(button);
@@ -83,8 +84,13 @@ function generateQuestion() {
 }
 
 // Função para tratar a resposta do usuário
-function handleAnswer(score) {
-    totalScore += score;
+function handleAnswer(score, category) {
+    if (category === "positive") {
+        totalScore += score;
+    } else {
+        totalScore -= score;
+    }
+
     const currentTopic = topics[currentTopicIndex];
     topicScores[currentTopic] = (topicScores[currentTopic] || 0) + score;
     showNextQuestion();
@@ -113,6 +119,7 @@ function showResult() {
     questionElement.style.display = 'none';
     optionsContainer.style.display = 'none';
     resultContainer.style.display = 'block';
+    titleMain.style.display = 'none';
 
     let resultHTML = '';
     let totalHTML = '';
@@ -121,7 +128,7 @@ function showResult() {
     let maxTopics = [];
 
     Object.entries(topicScores).forEach(([topic, score]) => {
-        resultHTML += `<p>${topic}: ${score}</p>`;
+        resultHTML += `<p>${topic}: ${score} de 25 pontos</p>`;
         if (score > maxTopicScore) {
             maxTopicScore = score;
             maxTopics = [topic];
@@ -130,7 +137,7 @@ function showResult() {
         }
     });
 
-    totalHTML = `<p>Total de Pontos: ${totalScore}</p>`;
+    totalHTML = `<p>Voce tem ${totalScore} % de GRIT </p>`;
 
     if (maxTopics.length === 1) {
         resultHTML += `<p class="highlighted-topic">VOCÊ É FORTE EM <span>${maxTopics[0].toUpperCase()}</span></p>`;
@@ -151,5 +158,4 @@ function startQuiz() {
 
 // Chamada para iniciar o questionário ao carregar a página
 startQuiz();
-
 
